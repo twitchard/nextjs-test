@@ -21,6 +21,7 @@ async function buffer(readable) {
 }
 
 const webhookHandler = async (req, res) => {
+  console.log(Object.keys(process.env));
   if (req.method === "POST") {
     console.log("Endpoint Stripe Key: ", process.env.STRIPE_KEY);
 
