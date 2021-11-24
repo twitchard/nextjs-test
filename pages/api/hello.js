@@ -28,14 +28,17 @@ const webhookHandler = async (req, res) => {
 
     const sig = req.headers["stripe-signature"];
     console.log("Signatures on endpoint: ", sig);
+    if (!sig) return res.status(400).send("No 'stripe-signature' header");
 
     const webhookSecret = process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET;
+    if (!webhookSecret) {
+      return res.status(400).send("No STRIPE_WEBHOOK_ENDPOINT_SECRET env var");
+    }
     console.log("Signing Secret on endpoint: ", webhookSecret);
 
     let event;
 
     try {
-      if (!sig || !webhookSecret) return;
       event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
     } catch (err) {
       console.log(`❌ Error message: ${err.message}`);
